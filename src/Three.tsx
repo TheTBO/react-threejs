@@ -6,13 +6,18 @@ export default function ThreeElement({
   width,
   fullWindow,
 }: {
-  height: number;
-  width: number;
   fullWindow: boolean;
+  height?: number;
+  width?: number;
 }) {
   const [scene, _setScene] = useState(new Three.Scene());
   const [camera, _setCamera] = useState(
-    new Three.PerspectiveCamera(75, width / height, 0.1, 1000),
+    new Three.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    ),
   );
   const containerRef = useRef(null);
   const requestRef = useRef(0);
@@ -45,7 +50,10 @@ export default function ThreeElement({
         resize();
       });
     } else {
+      if (!width || !height) return;
+      camera.aspect = width / height;
       renderer.setSize(width, height);
+      camera.updateProjectionMatrix();
     }
 
     scene.add(cube);
